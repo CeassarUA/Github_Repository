@@ -27,7 +27,7 @@ class SearchViewModel : ViewModel() {
 
 private data class HomeViewModelState(
 
-    //todo change to
+    //todo change to feed
     val postsFeed: Any? = null,
 //    val isArticleOpen: Boolean = false,
     val isLoading: Boolean = false,
@@ -49,6 +49,4 @@ private data class HomeViewModelState(
                 searchInput = searchInput,
             )
         }
-
-
 }

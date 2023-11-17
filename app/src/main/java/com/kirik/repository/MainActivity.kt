@@ -31,7 +31,6 @@ class MainActivity : ComponentActivity() {
                 val navigationActions = remember(navController) {
                     NavigationActions(navController)
                 }
-                val coroutineScope = rememberCoroutineScope()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute =
                     navBackStackEntry?.destination?.route ?: HOME_ROUTE

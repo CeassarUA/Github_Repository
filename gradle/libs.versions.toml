@@ -13,7 +13,7 @@ room = "2.6.0"
 ksp = "1.9.10-1.0.13"
 androidxNavigation = "2.7.5"
 androidxLifecycle = "2.6.2"
-
+retrofitVer = "2.9.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -36,6 +36,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigation" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewModelCompose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
+retrofit = { group = "com.squareup.retrofit2", name ="retrofit" ,version.ref ="retrofitVer"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

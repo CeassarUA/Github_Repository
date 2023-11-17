@@ -48,5 +48,14 @@ fun RepositoryNavGraph(
                 homeViewModel = homeViewModel
             )
         }
+        composable(
+            route = RepositoryDestinations.DETAILS_ROUTE
+        ) { navBackStackEntry ->
+            val homeViewModel =
+                SearchViewModel()
+            HomeRoute(
+                homeViewModel = homeViewModel
+            )
+        }
     }
 }
