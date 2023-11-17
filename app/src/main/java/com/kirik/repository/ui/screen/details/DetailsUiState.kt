@@ -16,4 +16,12 @@ sealed interface DetailsUiState {
     {
 
     }
+
+    data class Details(
+        override val isLoading: Boolean,
+        override val errorMessages: List<String> ):DetailsUiState
+    {
+
+    }
+
 }

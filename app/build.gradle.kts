@@ -2,6 +2,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
 
 }
@@ -62,6 +63,13 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
+    implementation(libs.koin)
+    implementation(libs.retrofit)
+    implementation(libs.serialization)
+
+    implementation(libs.gson)
+    implementation(libs.okhttp3.logging.interceptor)
+    implementation(libs.retrofit.converter.gson)
 
 
     // Architecture Components
