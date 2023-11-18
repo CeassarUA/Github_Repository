@@ -2,13 +2,32 @@ package com.kirik.repository.ui.screen.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kirik.repository.data.model.RepositoryResponse
+import com.kirik.repository.domain.useCase.RepositoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(val useCase: RepositoryUseCase) : ViewModel() {
+
+    val repositoryFlow = MutableStateFlow<RepositoryResponse?>(null)
+
+    fun findRepo(text: String) {
+        viewModelScope.launch {
+            repositoryFlow.tryEmit(useCase.getRepositories(text))
+        }
+    }
+
+    fun changeSearchText(searchText: String) {
+        viewModelState.update {
+            it.copy(searchInput = searchText)
+        }
+        findRepo(searchText)
+    }
 
     private val viewModelState = MutableStateFlow(
         HomeViewModelState(

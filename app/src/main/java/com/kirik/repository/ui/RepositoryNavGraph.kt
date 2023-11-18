@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kirik.repository.ui.screen.search.HomeRoute
 import com.kirik.repository.ui.screen.search.SearchViewModel
+import org.koin.java.KoinJavaComponent.get
 
 const val POST_ID = "postId"
 
@@ -42,8 +43,8 @@ fun RepositoryNavGraph(
         composable(
             route = RepositoryDestinations.HOME_ROUTE
         ) { navBackStackEntry ->
-            val homeViewModel: SearchViewModel =
-                SearchViewModel()
+            val homeViewModel: SearchViewModel = get(SearchViewModel::class.java)
+
             HomeRoute(
                 homeViewModel = homeViewModel
             )
@@ -51,8 +52,8 @@ fun RepositoryNavGraph(
         composable(
             route = RepositoryDestinations.DETAILS_ROUTE
         ) { navBackStackEntry ->
-            val homeViewModel =
-                SearchViewModel()
+            val homeViewModel :
+                SearchViewModel = get(SearchViewModel::class.java)
             HomeRoute(
                 homeViewModel = homeViewModel
             )

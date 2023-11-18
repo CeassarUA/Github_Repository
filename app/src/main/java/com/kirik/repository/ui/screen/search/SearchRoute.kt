@@ -11,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 
 
-
 @Composable
 internal fun HomeRoute(
     uiState: SearchUiState,
@@ -32,7 +31,7 @@ internal fun HomeRoute(
             post.id to rememberLazyListState()
         }
     }
-    SearchScreen(state = uiState)
+    SearchScreen(state = uiState, viewModel)
 
 }
 
@@ -42,11 +41,12 @@ fun HomeRoute(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
     // UiState of the HomeScreen
-    val uiState:SearchUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: SearchUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-    HomeRoute(uiState,
+    HomeRoute(
+        uiState,
         homeViewModel
-        )
+    )
 }
 
 
