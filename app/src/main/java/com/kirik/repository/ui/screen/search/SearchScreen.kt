@@ -6,19 +6,16 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.kirik.repository.Greeting
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun SearchScreen(
     state: SearchUiState,
     viewModel: SearchViewModel
 ) {
     Column {
         SearchField(text = state.searchInput, onValueChange = viewModel::changeSearchText)
-        Greeting(
-            name = "SearchScreen"
-        )
+
     }
 
 }
