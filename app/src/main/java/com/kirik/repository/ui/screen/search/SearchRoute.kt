@@ -1,5 +1,6 @@
 package com.kirik.repository.ui.screen.search
 
+import android.util.Log
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -14,23 +15,9 @@ import androidx.compose.runtime.getValue
 @Composable
 internal fun HomeRoute(
     uiState: SearchUiState,
-
     viewModel: SearchViewModel
 ) {
-    val homeListLazyListState = rememberLazyListState()
-    val mockList = listOf(
-        Repository(
-            1, "1", 1
-        )
-    )
-    val articleDetailLazyListStates = when (uiState) {
-        is SearchUiState.NoPosts -> emptyList()
-        else -> mockList
-    }.associate { post ->
-        key(post.id) {
-            post.id to rememberLazyListState()
-        }
-    }
+    Log.d("HomeRoute", uiState.toString())
     SearchScreen(state = uiState, viewModel)
 
 }
@@ -42,7 +29,6 @@ fun HomeRoute(
 ) {
     // UiState of the HomeScreen
     val uiState: SearchUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
-
     HomeRoute(
         uiState,
         homeViewModel

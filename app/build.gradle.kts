@@ -70,7 +70,8 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.okhttp3.logging.interceptor)
     implementation(libs.retrofit.converter.gson)
-
+    implementation ("androidx.paging:paging-runtime:3.2.1")
+    implementation ("androidx.paging:paging-compose:3.2.1")
 
     // Architecture Components
     implementation(libs.room.runtime)

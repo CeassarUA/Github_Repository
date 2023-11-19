@@ -1,8 +1,10 @@
 package com.kirik.repository.ui.screen.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kirik.repository.data.model.RepositoryResponse
+import com.kirik.repository.domain.GithubRepository
 import com.kirik.repository.domain.useCase.RepositoryUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,26 +14,36 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SearchViewModel(val useCase: RepositoryUseCase) : ViewModel() {
+class SearchViewModel(val repositories: GithubRepository) : ViewModel() {
 
-    val repositoryFlow = MutableStateFlow<RepositoryResponse?>(null)
-
-    fun findRepo(text: String) {
-        viewModelScope.launch {
-            repositoryFlow.tryEmit(useCase.getRepositories(text))
-        }
-    }
+    fun getRepos(text:String) = repositories.searchRepository(text)
+//    fun findRepo(text: String) {
+//        viewModelScope.launch {
+//            val response = if (text.isBlank()) RepositoryResponse(
+//                null, null, null
+//            ) else
+//                useCase.getRepositories(text)
+//            Log.d("SearchViewModel", response.toString())
+//
+//            viewModelState.update {
+//                it.copy(
+//                    repositories = response.items?.filterNotNull() ?: listOf()
+//                )
+//            }
+//        }
+//    }
 
     fun changeSearchText(searchText: String) {
         viewModelState.update {
             it.copy(searchInput = searchText)
         }
-        findRepo(searchText)
+//        findRepo(searchText)
     }
 
     private val viewModelState = MutableStateFlow(
         HomeViewModelState(
             isLoading = true,
+
 //            isArticleOpen = preSelectedPostId != null
         )
     )
@@ -47,25 +59,29 @@ class SearchViewModel(val useCase: RepositoryUseCase) : ViewModel() {
 private data class HomeViewModelState(
 
     //todo change to feed
-    val postsFeed: Any? = null,
+    val repositories: List<RepositoryResponse.Item> = listOf(),
 //    val isArticleOpen: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessages: List<String> = emptyList(),
     val searchInput: String = "",
 ) {
+
     fun toUiState() =
-        if (postsFeed == null) {
+
+        if (repositories.isEmpty()) {
+            Log.d("HomeRoute", "isEmpty")
+
             SearchUiState.NoPosts(
                 isLoading = isLoading,
-                errorMessages = errorMessages,
                 searchInput = searchInput,
             )
+
         } else {
-            //todo state
-            SearchUiState.NoPosts(
+            SearchUiState.PostFounded(
                 isLoading = isLoading,
-                errorMessages = errorMessages,
                 searchInput = searchInput,
+                repoList = repositories
+
             )
         }
 }
