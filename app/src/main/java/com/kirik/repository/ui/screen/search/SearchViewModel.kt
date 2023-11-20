@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.kirik.repository.domain.useCase.RepositoryUseCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +36,7 @@ class SearchViewModel(val searchGithubUseCase: RepositoryUseCase) : ViewModel() 
         )
 
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     var searchResult  =
         viewModelState.map { it.searchInput }
             .distinctUntilChanged()

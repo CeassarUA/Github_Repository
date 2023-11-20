@@ -7,4 +7,5 @@
     <string name="try_again">Try again</string>
     <string name="request_limmit">Request limit, pls wait</string>
     <string name="startSearch">Input your repository name</string>
+    <string name="_issues">Issues:</string>
 </resources>

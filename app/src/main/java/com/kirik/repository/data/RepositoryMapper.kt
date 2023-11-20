@@ -11,4 +11,7 @@ fun RepositoryResponse.Item.mapToRepository() = Repository(
     watchersCount = this.watchersCount ?: 0,
     stars = this.stargazersCount ?: 0,
     image = this.owner.avatarUrl,
+    language = this.language ?: "",
+    createdAt = this.createdAt ?: "",
+    issues = this.issues ?: 0
 )

@@ -1,10 +1,13 @@
 package com.kirik.repository
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kirik.repository.data.api.GithubApi
 import com.kirik.repository.data.mapToRepository
 import com.kirik.repository.domain.model.Repository
+import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 class RepositoryPagingSource(
     private val query: String,
@@ -25,7 +28,11 @@ class RepositoryPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Repository> {
         return try {
+            //Test of canceling
+//            val delay =  Random.nextLong(100, 1000)
+//            delay(delay)
             val page = params.key ?: 1
+
             val response = githubApi.searchRepo(
                 page = page,
                 perPage = PER_PAGE,
@@ -33,7 +40,8 @@ class RepositoryPagingSource(
             ).items.map {
                 it.mapToRepository()
             }
-
+//                .map { it.copy(name = ("$query $page")) }
+//            Log.d("Paging", "$delay   " + response.firstOrNull()?.name.toString())
             LoadResult.Page(
                 data = response,
                 prevKey = if (page == 1) null else page.minus(1),

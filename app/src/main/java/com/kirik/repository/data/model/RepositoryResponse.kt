@@ -28,7 +28,14 @@ data class RepositoryResponse(
         val watchersCount: Int?,
         @SerializedName("stargazers_count")
         val stargazersCount: Int?,
-        val owner: Owner
+        val owner: Owner,
+        @SerializedName("language")
+        val language: String?,
+        @SerializedName("created_at")
+        val createdAt: String?,
+        @SerializedName("open_issues_count")
+
+        val issues: Int?
     ) {
         data class Owner(
             @SerializedName("avatar_url")

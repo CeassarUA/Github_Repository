@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,10 +26,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kirik.repository.R
+import com.kirik.repository.domain.format
+import com.kirik.repository.domain.getDate
 
 import com.kirik.repository.domain.model.Repository
 import com.kirik.repository.ui.screen.LoadingScreen
-import com.kirik.repository.ui.screen.search.SearchUiState
 
 @Composable
 fun DetailsRoute(
@@ -62,7 +62,7 @@ fun DetailsScreen(
 
     Column(
         modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .padding(8.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -80,6 +80,9 @@ fun DetailsScreen(
                 .clip(CircleShape)
         )
 
+        Text(
+            text = repository.createdAt.getDate().format()
+        )
 
         Row {
             Image(
@@ -92,25 +95,39 @@ fun DetailsScreen(
 
             )
 
+            Text(
+
+                text = stringResource(id = R.string._issues),
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Text(
+                text = repository.issues.toString(),
+                modifier = Modifier.padding(horizontal = 4.dp)
+
+            )
+
         }
 
         Text(
-            text = repository.name ?: "",
+            text = repository.name,
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.fillMaxWidth()
         )
 
         Text(
-            text = repository.fullName ?: "",
-            fontSize = 18.sp,
+            text = repository.fullName,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Text(
+            text = repository.language,
             modifier = Modifier.fillMaxWidth()
         )
 
 
         Text(
             text = repository.description ?: "",
-            maxLines = 3,
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -128,7 +145,10 @@ fun DetailsPreview() {
             description = "repository loreas text",
             watchersCount = 1,
             stars = 2,
-            image = ""
+            image = "",
+            createdAt = "2022",
+            issues = 1,
+            language = "kotlin"
         ), Modifier
     )
 }

@@ -48,7 +48,7 @@ fun RepositoryNavGraph(
     ) {
         composable(
             route = RepositoryDestinations.SearchRoute.route
-        ) { navBackStackEntry ->
+        ) {
             val searchViewModel: SearchViewModel = getViewModel()
             SearchRoute(
                 viewModel = searchViewModel
@@ -65,7 +65,7 @@ fun RepositoryNavGraph(
                 navArgument(RepositoryDestinations.DetailRoute.NAME) {
                     type = NavType.StringType
                 })
-        ) { navBackStackEntry ->
+        ) {
             val viewModel: DetailsViewModel = getViewModel()
             DetailsRoute(viewModel, modifier = Modifier.fillMaxSize())
         }

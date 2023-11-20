@@ -296,7 +296,10 @@ fun RepoListPreview(modifier: Modifier = Modifier) {
             description = "repository loreas text",
             watchersCount = 1,
             stars = 2,
-            image = ""
+            image = "",
+            createdAt = "2022",
+            issues = 1,
+            language = "kotlin"
         ), onItemClick = {}
     )
 
