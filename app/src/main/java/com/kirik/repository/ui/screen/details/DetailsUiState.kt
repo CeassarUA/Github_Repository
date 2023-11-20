@@ -1,27 +1,10 @@
 package com.kirik.repository.ui.screen.details
 
-sealed interface DetailsUiState {
+import com.kirik.repository.domain.model.Repository
 
-    val isLoading: Boolean
-    val errorMessages: List<String>
-
-    data class NoData(
-        override val isLoading: Boolean,
-        override val errorMessages: List<String>,
-    ) : DetailsUiState
-
-    data class Info(
-        override val isLoading: Boolean,
-        override val errorMessages: List<String>, ):DetailsUiState
-    {
-
+sealed class DetailsUiState() {
+        data object LoadingState : DetailsUiState()
+        data class RepositoryState(
+            val repository: Repository
+        ) : DetailsUiState()
     }
-
-    data class Details(
-        override val isLoading: Boolean,
-        override val errorMessages: List<String> ):DetailsUiState
-    {
-
-    }
-
-}

@@ -17,7 +17,7 @@ data class RepositoryResponse(
         val fullName: String?,
 
         @SerializedName("id")
-        val id: Int?,
+        val id: Int,
 
         @SerializedName("name")
         val name: String?,
@@ -28,7 +28,12 @@ data class RepositoryResponse(
         val watchersCount: Int?,
         @SerializedName("stargazers_count")
         val stargazersCount: Int?,
+        val owner: Owner
     ) {
+        data class Owner(
+            @SerializedName("avatar_url")
+            val avatarUrl: String?
+        )
 
     }
 }

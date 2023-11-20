@@ -45,8 +45,9 @@ retrofit = { group = "com.squareup.retrofit2", name ="retrofit" ,version.ref ="r
 okhttp3-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttpLogging" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVer" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-koin = { group = "io.insert-koin", name ="koin-android" ,version.ref ="koinVersion"}
+koin = { group = "io.insert-koin", name ="koin-androidx-compose" ,version.ref ="koinVersion"}
 serialization = { group = "org.jetbrains.kotlinx", name ="kotlinx-serialization-json" ,version.ref ="serializationVersion"}
+coil = "io.coil-kt:coil-compose:2.4.0"
 
 
 [plugins]

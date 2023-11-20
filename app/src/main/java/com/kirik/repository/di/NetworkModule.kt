@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val networkModule = module {
     single { createGithubApi() }
-    single<GithubRepository> { GithubRepositoryImpl(get()) }
+    single<GithubRepository> { GithubRepositoryImpl(get(), get()) }
 }
 
 private const val BASE_URL = "https://api.github.com"

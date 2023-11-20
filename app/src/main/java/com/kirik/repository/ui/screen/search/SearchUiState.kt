@@ -1,6 +1,7 @@
 package com.kirik.repository.ui.screen.search
 
 import com.kirik.repository.data.model.RepositoryResponse
+import kotlinx.coroutines.flow.Flow
 
 sealed interface SearchUiState {
 
@@ -14,7 +15,6 @@ sealed interface SearchUiState {
 
     data class PostFounded(
         override val isLoading: Boolean,
-        override val searchInput: String,
-        val repoList: List<RepositoryResponse.Item>
+        override val searchInput: String
     ) : SearchUiState
 }

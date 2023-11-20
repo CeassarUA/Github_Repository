@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
+    id("kotlin-parcelize")
+    id("kotlin-kapt")
 
 }
 
@@ -66,6 +68,7 @@ dependencies {
     implementation(libs.koin)
     implementation(libs.retrofit)
     implementation(libs.serialization)
+    implementation(libs.coil)
 
     implementation(libs.gson)
     implementation(libs.okhttp3.logging.interceptor)

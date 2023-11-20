@@ -16,15 +16,21 @@
 
 package com.kirik.repository.ui
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kirik.repository.ui.screen.search.HomeRoute
+import androidx.navigation.navArgument
+import com.kirik.repository.ui.screen.details.DetailsRoute
+import com.kirik.repository.ui.screen.details.DetailsScreen
+import com.kirik.repository.ui.screen.details.DetailsViewModel
+import com.kirik.repository.ui.screen.search.SearchRoute
 import com.kirik.repository.ui.screen.search.SearchViewModel
-import org.koin.java.KoinJavaComponent.get
+import org.koin.androidx.compose.getViewModel
 
 const val POST_ID = "postId"
 
@@ -32,31 +38,36 @@ const val POST_ID = "postId"
 fun RepositoryNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    openDrawer: () -> Unit = {},
-    startDestination: String = RepositoryDestinations.HOME_ROUTE,
+    startDestination: String = RepositoryDestinations.SearchRoute.route,
 ) {
+    val navigationActions = NavigationActions(navController)
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
         composable(
-            route = RepositoryDestinations.HOME_ROUTE
+            route = RepositoryDestinations.SearchRoute.route
         ) { navBackStackEntry ->
-            val homeViewModel: SearchViewModel = get(SearchViewModel::class.java)
-
-            HomeRoute(
-                homeViewModel = homeViewModel
-            )
+            val searchViewModel: SearchViewModel = getViewModel()
+            SearchRoute(
+                viewModel = searchViewModel
+            ) {
+                navigationActions.navigateToDetails(it)
+            }
         }
         composable(
-            route = RepositoryDestinations.DETAILS_ROUTE
+            route = "details/{${RepositoryDestinations.DetailRoute.OWNER}}/{${RepositoryDestinations.DetailRoute.NAME}}",
+            arguments = listOf(
+                navArgument(RepositoryDestinations.DetailRoute.OWNER) {
+                    type = NavType.StringType
+                },
+                navArgument(RepositoryDestinations.DetailRoute.NAME) {
+                    type = NavType.StringType
+                })
         ) { navBackStackEntry ->
-            val homeViewModel :
-                SearchViewModel = get(SearchViewModel::class.java)
-            HomeRoute(
-                homeViewModel = homeViewModel
-            )
+            val viewModel: DetailsViewModel = getViewModel()
+            DetailsRoute(viewModel, modifier = Modifier.fillMaxSize())
         }
     }
 }
