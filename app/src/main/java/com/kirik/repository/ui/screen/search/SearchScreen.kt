@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -40,6 +41,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.kirik.repository.R
 import com.kirik.repository.domain.model.Repository
+import com.kirik.repository.ui.screen.LoadingScreen
 import retrofit2.HttpException
 
 
@@ -60,7 +62,7 @@ fun SearchScreen(
         )
         when (state) {
             is SearchUiState.NoPosts -> {
-                NoItems(modifier = Modifier.fillMaxSize())
+                StartSearch()
             }
 
             is SearchUiState.PostFounded -> {
@@ -69,12 +71,27 @@ fun SearchScreen(
                 RepoList(
                     lazyPagingItems = items,
                     modifier = Modifier.fillMaxSize(),
+                    emptyState = {
+                        NoItems(modifier = Modifier.fillMaxSize())
+                    },
                     onRepositoryClick = onRepositoryClick
                 )
 
             }
+
         }
     }
+}
+
+@Composable
+fun StartSearch(modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(id = R.string.startSearch),
+        fontSize = 24.sp,
+        textAlign = TextAlign.Center,
+        modifier = modifier.fillMaxSize()
+
+    )
 }
 
 
@@ -82,54 +99,80 @@ fun SearchScreen(
 fun RepoList(
     lazyPagingItems: LazyPagingItems<Repository>,
     modifier: Modifier = Modifier,
+    emptyState: @Composable LazyItemScope.() -> Unit,
     onRepositoryClick: (Repository) -> Unit
 ) {
     val listState = rememberLazyListState()
-    LazyColumn(
-        state = listState,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = modifier.padding(horizontal = 8.dp)
-    ) {
-        items(
-            count = lazyPagingItems.itemCount,
-        ) {
-            lazyPagingItems[it]?.let { repository ->
-                RepositoryItem(repository, {
-                    onRepositoryClick(repository)
-                })
+    when (lazyPagingItems.loadState.refresh) {
+        is LoadState.Loading -> {
+            LoadingScreen(modifier = Modifier.fillMaxWidth())
+        }
+
+        is LoadState.Error -> {
+            GetError(loadState = lazyPagingItems.loadState.refresh) {
+                lazyPagingItems.retry()
             }
         }
-        lazyPagingItems.apply {
-            when {
-                loadState.append is LoadState.Loading -> {
-                    item { LoadingItem() }
+
+        else -> {
+            LazyColumn(
+                state = listState,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = modifier.padding(horizontal = 8.dp)
+            ) {
+                items(
+                    count = lazyPagingItems.itemCount,
+                ) {
+                    lazyPagingItems[it]?.let { repository ->
+                        RepositoryItem(repository, {
+                            onRepositoryClick(repository)
+                        })
+                    }
                 }
+                lazyPagingItems.apply {
 
-                loadState.append is LoadState.Error || loadState.refresh is LoadState.Error -> {
-                    item {
-                        val errorText = when {
-                            ((loadState.append as LoadState.Error).error as? HttpException)?.code() == 403 -> {
-                                stringResource(id = R.string.request_limmit)
-                            }
+                    when {
 
-                            else -> {
-                                (loadState.append as LoadState.Error).error.message
-                                    ?: stringResource(id = R.string.error)
+                        loadState.source.refresh is LoadState.NotLoading &&
+                                loadState.append.endOfPaginationReached &&
+                                lazyPagingItems.itemCount < 1 -> {
+                            item(content = emptyState)
+                        }
+
+                        loadState.append is LoadState.Loading -> {
+                            item { LoadingItem() }
+                        }
+
+                        loadState.append is LoadState.Error -> {
+                            item {
+                                GetError(loadState.append, ::retry)
                             }
                         }
-                        ErrorItem(
-                            onClick = { retry() },
-                            message = errorText,
-                            modifier = Modifier.fillMaxWidth()
-
-                        )
-
-
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun GetError(loadState: LoadState, retry: () -> Unit) {
+    val errorText = when {
+        ((loadState as? LoadState.Error)?.error as? HttpException)?.code() == 403 -> {
+            stringResource(id = R.string.request_limmit)
+        }
+
+        else -> {
+            (loadState as? LoadState.Error)?.error?.message
+                ?: stringResource(id = R.string.error)
+        }
+    }
+    ErrorItem(
+        onClick = { retry() },
+        message = errorText,
+        modifier = Modifier.fillMaxWidth()
+
+    )
 }
 
 @Composable
