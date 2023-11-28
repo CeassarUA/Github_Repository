@@ -1,13 +1,9 @@
-package com.kirik.repository
+package com.kirik.repository.data
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kirik.repository.data.api.GithubApi
-import com.kirik.repository.data.mapToRepository
 import com.kirik.repository.domain.model.Repository
-import kotlinx.coroutines.delay
-import kotlin.random.Random
 
 class RepositoryPagingSource(
     private val query: String,

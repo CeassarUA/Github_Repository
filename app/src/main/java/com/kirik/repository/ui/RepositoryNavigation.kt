@@ -13,7 +13,6 @@ sealed class RepositoryDestinations(val route: String) {
 
         fun createRoute(repository: Repository) = route + "/${repository.fullName}"
     }
-
 }
 
 class NavigationActions(navController: NavHostController) {

@@ -18,13 +18,9 @@ import kotlinx.coroutines.flow.update
 
 class SearchViewModel(val searchGithubUseCase: RepositoryUseCase) : ViewModel() {
 
-
-
-
     private val viewModelState = MutableStateFlow(
         SearchViewModelState(
             isLoading = true,
-
         )
     )
     val uiState: StateFlow<SearchUiState> = viewModelState
@@ -35,7 +31,6 @@ class SearchViewModel(val searchGithubUseCase: RepositoryUseCase) : ViewModel() 
             viewModelState.value.toUiState()
         )
 
-
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     var searchResult  =
         viewModelState.map { it.searchInput }
@@ -44,7 +39,6 @@ class SearchViewModel(val searchGithubUseCase: RepositoryUseCase) : ViewModel() 
             .flatMapLatest {
                 return@flatMapLatest searchGithubUseCase(it)
             }.cachedIn(viewModelScope)
-
 
     fun changeSearchText(searchText: String) {
         viewModelState.update {

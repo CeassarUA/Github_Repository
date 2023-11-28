@@ -2,7 +2,6 @@ package com.kirik.repository.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import com.kirik.repository.RepositoryPagingSource
 import com.kirik.repository.data.api.GithubApi
 import com.kirik.repository.data.model.RepositoryResponse
 import com.kirik.repository.domain.GithubRepository
@@ -14,7 +13,6 @@ class GithubRepositoryImpl(
 ) : GithubRepository {
 
     override suspend fun search(text: String, page: Int, perPage: Int): List<Repository> {
-
         val repositories = api.searchRepo(text, page, perPage).items.map {
             it.mapToRepository()
         }
@@ -45,8 +43,6 @@ class GithubRepositoryImpl(
         return cached ?: getRepositoryByFullAddressRemote(
             owner, name
         ).mapToRepository()
-
     }
-
 
 }
