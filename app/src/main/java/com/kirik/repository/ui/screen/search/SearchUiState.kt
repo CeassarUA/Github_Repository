@@ -1,19 +1,12 @@
 package com.kirik.repository.ui.screen.search
 
-import com.kirik.repository.data.model.RepositoryResponse
-import kotlinx.coroutines.flow.Flow
-
 sealed interface SearchUiState {
-    val searchInput: String
-
-
-    data class NoPosts(
+    data class NoItems(
         val isLoading: Boolean,
-        override val searchInput: String
     ) : SearchUiState
 
-    data class PostFounded(
+    data class ItemsFounded(
         val isLoading: Boolean,
-        override val searchInput: String
+        val items : List<String>
     ) : SearchUiState
 }

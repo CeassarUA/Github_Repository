@@ -1,7 +1,6 @@
 package com.kirik.repository
 
 import com.google.gson.Gson
-import com.kirik.repository.data.model.RepositoryResponse
 import org.junit.Test
 
 import org.junit.Assert.*

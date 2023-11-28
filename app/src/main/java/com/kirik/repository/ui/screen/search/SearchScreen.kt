@@ -1,19 +1,20 @@
 package com.kirik.repository.ui.screen.search
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -23,24 +24,17 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.kirik.repository.R
-import com.kirik.repository.domain.model.Repository
 import com.kirik.repository.ui.screen.LoadingScreen
 import retrofit2.HttpException
 
@@ -53,23 +47,23 @@ fun SearchScreen(
 ) {
     Column {
         SearchField(
-            text = state.searchInput,
-            hint = stringResource(id = R.string.input_repository),
-            onValueChange = viewModel::changeSearchText,
+            text = "",
+            hint = stringResource(id = R.string.input_search),
+            onValueChange = { },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
         )
         when (state) {
-            is SearchUiState.NoPosts -> {
+            is SearchUiState.NoItems -> {
                 StartSearch()
             }
 
-            is SearchUiState.PostFounded -> {
-                val items = viewModel.searchResult.collectAsLazyPagingItems()
+            is SearchUiState.ItemsFounded -> {
+//                val items = viewModel.results
 
                 RepoList(
-                    lazyPagingItems = items,
+                    list = listOf(),
                     modifier = Modifier.fillMaxSize(),
                     emptyState = {
                         NoItems(modifier = Modifier.fillMaxSize())
@@ -97,83 +91,20 @@ fun StartSearch(modifier: Modifier = Modifier) {
 
 @Composable
 fun RepoList(
-    lazyPagingItems: LazyPagingItems<Repository>,
+    list: List<Repository>,
     modifier: Modifier = Modifier,
     emptyState: @Composable LazyItemScope.() -> Unit,
     onRepositoryClick: (Repository) -> Unit
 ) {
-    val listState = rememberLazyListState()
-    when (lazyPagingItems.loadState.refresh) {
-        is LoadState.Loading -> {
-            LoadingScreen(modifier = Modifier.fillMaxWidth())
-        }
-
-        is LoadState.Error -> {
-            GetError(loadState = lazyPagingItems.loadState.refresh) {
-                lazyPagingItems.retry()
-            }
-        }
-
-        else -> {
-            LazyColumn(
-                state = listState,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = modifier.padding(horizontal = 8.dp)
-            ) {
-                items(
-                    count = lazyPagingItems.itemCount,
-                ) {
-                    lazyPagingItems[it]?.let { repository ->
-                        RepositoryItem(repository, {
-                            onRepositoryClick(repository)
-                        })
-                    }
-                }
-                lazyPagingItems.apply {
-
-                    when {
-
-                        loadState.source.refresh is LoadState.NotLoading &&
-                                loadState.append.endOfPaginationReached &&
-                                lazyPagingItems.itemCount < 1 -> {
-                            item(content = emptyState)
-                        }
-
-                        loadState.append is LoadState.Loading -> {
-                            item { LoadingItem() }
-                        }
-
-                        loadState.append is LoadState.Error -> {
-                            item {
-                                GetError(loadState.append, ::retry)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+        items(items = list, itemContent = { item ->
+            Log.d("COMPOSE", "This get rendered $item")
+            RepositoryItem(repo = item, onItemClick = { onRepositoryClick(item) })
+        })
     }
+
 }
 
-@Composable
-fun GetError(loadState: LoadState, retry: () -> Unit) {
-    val errorText = when {
-        ((loadState as? LoadState.Error)?.error as? HttpException)?.code() == 403 -> {
-            stringResource(id = R.string.request_limmit)
-        }
-
-        else -> {
-            (loadState as? LoadState.Error)?.error?.message
-                ?: stringResource(id = R.string.error)
-        }
-    }
-    ErrorItem(
-        onClick = { retry() },
-        message = errorText,
-        modifier = Modifier.fillMaxWidth()
-
-    )
-}
 
 @Composable
 fun RepositoryItem(
@@ -196,18 +127,7 @@ fun RepositoryItem(
                 .fillMaxWidth()
         ) {
             Row {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(repo.image)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = repo.name,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(64.dp)
-                        .align(Alignment.CenterVertically)
-                        .clip(CircleShape)
-                )
+
                 Column(
                     modifier
                         .padding(horizontal = 8.dp)
@@ -227,20 +147,11 @@ fun RepositoryItem(
                             painter = painterResource(id = R.drawable.star),
                             contentDescription = stringResource(id = R.string.star)
                         )
-                        Text(
-                            text = repo.stars.toString(),
-                            modifier = Modifier.padding(horizontal = 4.dp)
 
-                        )
 
                     }
                 }
             }
-            Text(
-                text = repo.description ?: "",
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
         }
     }
 
@@ -290,16 +201,7 @@ fun ErrorItem(
 fun RepoListPreview(modifier: Modifier = Modifier) {
     RepositoryItem(
         Repository(
-            fullName = "fullname",
-            id = 1,
             name = "repository",
-            description = "repository loreas text",
-            watchersCount = 1,
-            stars = 2,
-            image = "",
-            createdAt = "2022",
-            issues = 1,
-            language = "kotlin"
         ), onItemClick = {}
     )
 

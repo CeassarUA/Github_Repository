@@ -1,25 +1,21 @@
 package com.kirik.repository.ui.screen.search
 
-import com.kirik.repository.data.model.RepositoryResponse
-
 data class SearchViewModelState(
 
     val isLoading: Boolean = false,
     val errorMessages: List<String> = emptyList(),
-    val searchInput: String = "",
+    var items: List<String>
 ) {
 
     fun toUiState() =
-        if (searchInput.isBlank()) {
-            SearchUiState.NoPosts(
+        if (items.isEmpty()) {
+            SearchUiState.NoItems(
                 isLoading = isLoading,
-                searchInput = searchInput,
             )
         } else {
-            SearchUiState.PostFounded(
+            SearchUiState.ItemsFounded(
                 isLoading = isLoading,
-                searchInput = searchInput
-
+                items
             )
         }
 }
